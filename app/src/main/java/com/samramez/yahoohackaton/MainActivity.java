@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 	ArrayList<Place> placesList;
 	ListView listView;
 	ImageLoader imgLoader;
+	DisplayImageOptions options;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 		buttonDiscover.setOnClickListener(this);
 
 		imgLoader = ImageLoader.getInstance();
+
+		options = new DisplayImageOptions.Builder()
+				.cacheInMemory(true)
+				.cacheOnDisc(true)
+				.considerExifParams(true)
+				.bitmapConfig(Bitmap.Config.RGB_565)
+				.build();
 
 		popultatePlaces();
 
@@ -290,9 +298,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 			final ViewHolder holder;
 			View view = convertView;
 			try {
-
 				if (view == null) {
-					view = getLayoutInflater().inflate(R.layout.list_item_layout, parent, false);
+					view = getLayoutInflater().inflate(R.layout.places_list_item, parent, false);
 					holder = new ViewHolder();
 					assert view != null;
 
@@ -304,14 +311,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 					holder = (ViewHolder) view.getTag();
 				}
 
-				ResponseClass res = responseClassArrayList.get(position);
+				Place pl = placesList.get(position);
 
-				if(res != null){
-					holder.blogName.setText(res.blog_name);
-					if(res.photos.size() > 0){
-						imgLoader.displayImage(res.photos.get(0), holder.imageView, options);
-						holder.photos.setText(String.valueOf(res.photos.size()) + " photos");
-					}
+				if(pl != null){
+					holder.cityName.setText(res.blog_name);
+					imgLoader.displayImage(res.photos.get(0), holder.imageView, options);
+					holder.photos.setText(String.valueOf(res.photos.size()) + " photos");
 				}
 
 			} catch (Exception e) {
